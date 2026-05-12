@@ -21,7 +21,7 @@ const SITE = {
   menu: [
     { id: 'contos',   href: 'contos_index.html',   label: 'contos'     },
     { id: 'ensaios',  href: 'ensaios_index.html',   label: 'ensaios'    },
-    { id: 'novelas',  href: 'novelas_index.html',   label: 'nouvelles'  },
+    { id: 'novelas', href: 'novelas_index.html', label: 'novelas' },
     { id: 'notas',    href: 'anotacoes.html',        label: 'anotações'  },
     { id: 'inicio',   href: 'index.html',            label: 'início'     },
   ],
