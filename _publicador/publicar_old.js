@@ -5,9 +5,6 @@
  * gera os HTMLs do site, atualiza os índices,
  * e faz commit+push para o GitHub Pages.
  *
- * Também remove automaticamente do índice qualquer
- * entrada cujo HTML correspondente não existe mais.
- *
  * Chamado pelo publicar.bat — não precisa abrir este arquivo.
  * Edite apenas a seção CONFIGURAÇÃO abaixo se necessário.
  */
@@ -32,7 +29,7 @@ const CONFIG = {
     ensaios: 'rascunhos/ensaios',
     novelas: 'rascunhos/novelas',
     notas:   'rascunhos/notas',
-  },
+},
 
   // Arquivos de índice no site
   indices: {
@@ -173,40 +170,6 @@ function atualizarIndice(arquivoIndice, href, titulo) {
   return true;
 }
 
-/**
- * Remove do índice todas as entradas cujo arquivo HTML
- * não existe mais em siteDir. Retorna quantas foram removidas.
- */
-function limparIndice(arquivoIndice, siteDir) {
-  if (!fs.existsSync(arquivoIndice)) return 0;
-
-  let html = fs.readFileSync(arquivoIndice, 'utf8');
-  const original = html;
-
-  // Encontra todos os href dentro de <li><a href="...">
-  const regex = /<li><a href="([^"]+)">[^<]*<\/a><\/li>/g;
-  let match;
-  let removidos = 0;
-
-  while ((match = regex.exec(original)) !== null) {
-    const href     = match[1];
-    const linha    = match[0];
-    const destHtml = path.join(siteDir, href);
-
-    if (!fs.existsSync(destHtml)) {
-      html = html.replace(linha + '\n', '').replace(linha, '');
-      console.log(`    – removido do índice: "${href}" (arquivo não existe)`);
-      removidos++;
-    }
-  }
-
-  if (removidos > 0) {
-    fs.writeFileSync(arquivoIndice, html, 'utf8');
-  }
-
-  return removidos;
-}
-
 /* ═══════════════════════════════════════════════════
    EXECUÇÃO PRINCIPAL
    ═══════════════════════════════════════════════════ */
@@ -214,21 +177,14 @@ function limparIndice(arquivoIndice, siteDir) {
 const siteDir   = path.resolve(CONFIG.siteDir);
 const scriptDir = path.dirname(path.resolve(process.argv[1] || __filename));
 
-let totalNovos    = 0;
-let totalRemovidos = 0;
+let totalNovos = 0;
 const erros = [];
 
 console.log('\n══════════════════════════════════════');
 console.log('  fonteboa — publicador');
 console.log('══════════════════════════════════════\n');
 
-// ── Passo 1: limpa entradas órfãs de todos os índices ──
-for (const [secao, nomeIndice] of Object.entries(CONFIG.indices)) {
-  const arquivoIndice = path.join(siteDir, nomeIndice);
-  totalRemovidos += limparIndice(arquivoIndice, siteDir);
-}
-
-// ── Passo 2: publica textos novos ──
+// Processa cada seção
 for (const [secao, pastaTxt] of Object.entries(CONFIG.rascunhos)) {
   const pastaAbsoluta = path.resolve(scriptDir, pastaTxt);
 
@@ -293,20 +249,16 @@ if (erros.length > 0) {
 }
 
 // Git commit + push
-const totalAlteracoes = totalNovos + totalRemovidos;
-
-if (totalAlteracoes > 0) {
-  const partes = [];
-  if (totalNovos > 0)     partes.push(`${totalNovos} novo(s)`);
-  if (totalRemovidos > 0) partes.push(`${totalRemovidos} removido(s)`);
-  const msg = `publica: ${partes.join(', ')}`;
-
-  console.log(`\n  Enviando alterações para o GitHub...`);
+if (totalNovos > 0) {
+  console.log(`\n  Enviando ${totalNovos} texto(s) para o GitHub...`);
   try {
     process.chdir(siteDir);
     execSync('git add -A', { stdio: 'inherit' });
+    const msg = totalNovos === 1
+      ? `publica 1 novo texto`
+      : `publica ${totalNovos} novos textos`;
     execSync(`git commit -m "${msg}"`, { stdio: 'inherit' });
-    execSync('git push', { stdio: 'inherit' });;
+    execSync('git push', { stdio: 'inherit' });
     console.log('\n  ✓ Publicado com sucesso no GitHub Pages!');
     console.log('  O texto estará no ar em cerca de 1 minuto.\n');
   } catch (e) {
@@ -315,5 +267,5 @@ if (totalAlteracoes > 0) {
     console.log('  Detalhes: ' + e.message);
   }
 } else if (erros.length === 0) {
-  console.log('\n  Nenhuma alteração encontrada.\n');
+  console.log('\n  Nenhum texto novo encontrado nas pastas de rascunhos.\n');
 }
