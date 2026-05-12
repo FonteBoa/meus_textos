@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Lorem Ipsum — teste de rolagem — fonteboa</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@900&amp;family=Lora:ital,wght@0,400;0,500;1,400&amp;display=swap" rel="stylesheet"/>
+<link href="style.css" rel="stylesheet"/></head>
+<body>
+<header><div class="titulo" id="titulo">ficção breve de Luiz Fonte Boa, (1962- )</div></header>
+<nav id="nav-menu">
+<a class="active" href="contos_index.html">índice de contos</a>
+<a href="ensaios_index.html">ensaios</a>
+<a href="novelas_index.html">novelas</a>
+<a href="anotacoes.html">anotações</a>
+<a class="inicio" href="index.html">início</a>
+</nav>
+<div class="content-area" id="content-area">
+<div class="text-title" id="text-title">Lorem Ipsum — teste de rolagem</div>
+<div class="scroll-area">
+<div class="scroll-inner" id="scroller">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+
+	Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.
+
+	Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est qui dolorem ipsum quia dolor sit amet consectetur adipisci velit, sed quia non numquam eius modi tempora incidunt.
+
+	Ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur. Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur.
+
+	At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi.
+
+	Id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore cum soluta nobis eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus.
+
+	Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat.
+
+	Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Arcu dui vivamus arcu felis bibendum ut tristique. Diam ut venenatis tellus in metus vulputate eu scelerisque felis egestas congue quisque egestas diam in arcu cursus euismod.
+
+	Quis viverra nibh cras pulvinar mattis nunc sed blandit libero. Sit amet volutpat consequat mauris nunc congue nisi vitae. Nisl purus in mollis nunc sed id semper risus. Egestas maecenas pharetra convallis posuere morbi leo urna molestie at elementum eu facilisis.
+
+	Mauris augue neque gravida in fermentum et sollicitudin ac. Eu lobortis elementum nibh tellus molestie nunc non blandit massa. Ut enim blandit volutpat maecenas volutpat blandit aliquam etiam erat velit scelerisque in dictum non consectetur amet consectetur adipiscing elit.
+
+	Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Nunc eget lorem dolor sed viverra ipsum nunc aliquet bibendum. In hac habitasse platea dictumst quisque sagittis purus sit amet volutpat consequat ac felis donec et odio.
+
+	Praesent elementum facilisis leo vel fringilla est ullamcorper eget. Id aliquet lectus proin nibh nisl condimentum id venenatis a. Etiam sit amet nisl purus in mollis nunc sed volutpat ac tincidunt vitae semper quis lectus nulla at volutpat.
+
+	Diam donec adipiscing tristique risus nec feugiat in fermentum posuere. Tellus id interdum velit laoreet id donec ultrices tincidunt arcu. Lacinia quis vel eros donec ac odio tempor orci dapibus nulla aliquet enim tortor at auctor urna nunc id cursus.
+
+	Nibh praesent tristique magna sit amet purus gravida quis. Duis ultricies lacus sed turpis tincidunt id aliquet risus feugiat. Pretium aenean pharetra magna ac placerat vestibulum lectus mauris ultrices eros in cursus turpis massa tincidunt dui ut ornare lectus.
+
+	Tellus molestie nunc non blandit massa enim nec dui nunc. Ornare arcu odio ut sem nulla pharetra diam sit amet. Mauris sit amet massa vitae tortor condimentum lacinia quis erat imperdiet sed euismod nisi porta lorem mollis aliquam ut porta nibh venenatis.
+
+	Sagittis orci a scelerisque purus semper eget duis at. Nunc id cursus metus aliquam eleifend mi in nulla posuere tincidunt dui ut ornare lectus sit amet est placerat in egestas erat imperdiet sed euismod nisi porta lorem mollis aliquam.</div>
+</div>
+<div class="scroll-nav">
+<button id="scroll-up">↑</button>
+<button id="scroll-down">↓</button>
+</div>
+</div>
+<div class="hero-wrap"><div class="hero-text" id="hero">contos</div></div>
+<script>
+function fitTitulo() {
+  const el = document.getElementById("titulo");
+  el.style.fontSize = "100px";
+  const margin = 36 * 2;
+  const scale = (window.innerWidth - margin) / el.scrollWidth;
+  el.style.fontSize = (100 * scale) + "px";
+}
+function fitHero() {
+  const el = document.getElementById("hero");
+  el.style.fontSize = "100px";
+  const scale = (window.innerWidth * 1.12) / el.scrollWidth;
+  el.style.fontSize = (100 * scale) + "px";
+}
+function positionContentArea() {
+  const nav = document.getElementById('nav-menu');
+  const lastLink = nav.querySelector('a:last-child');
+  const lastLinkRect = lastLink.getBoundingClientRect();
+  const contentArea = document.getElementById('content-area');
+  contentArea.style.top = (lastLinkRect.bottom + 50) + 'px';
+}
+document.fonts.ready.then(() => { fitTitulo(); fitHero(); positionContentArea(); });
+window.addEventListener("resize", () => { fitTitulo(); fitHero(); positionContentArea(); });
+document.querySelectorAll('nav a').forEach(link => {
+  link.addEventListener('click', function(e) {
+    if (this.href) { e.preventDefault(); window.location.href = this.href; }
+  });
+});
+
+// point 18: read title from URL param
+const params = new URLSearchParams(window.location.search);
+const titulo = params.get('titulo');
+if (titulo) {
+  const el = document.getElementById('text-title');
+  if (el) el.textContent = titulo;
+}
+
+const scroller = document.getElementById('scroller');
+const STEP = 160;
+document.getElementById('scroll-up').addEventListener('click', () => scroller.scrollBy({ top: -STEP, behavior: 'smooth' }));
+document.getElementById('scroll-down').addEventListener('click', () => scroller.scrollBy({ top: STEP, behavior: 'smooth' }));
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowDown' || e.key === 'PageDown') { e.preventDefault(); scroller.scrollBy({ top: STEP, behavior: 'smooth' }); }
+  if (e.key === 'ArrowUp' || e.key === 'PageUp') { e.preventDefault(); scroller.scrollBy({ top: -STEP, behavior: 'smooth' }); }
+});
+</script>
+</body></html>

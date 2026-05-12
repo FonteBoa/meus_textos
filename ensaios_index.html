@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>ensaios — fonteboa</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@900&amp;family=Lora:ital,wght@0,400;0,500;1,400&amp;display=swap" rel="stylesheet"/>
+<link href="style.css" rel="stylesheet"/></head>
+<body>
+<header><div class="titulo" id="titulo">ficção breve de Luiz Fonte Boa, (1962- )</div></header>
+<nav id="nav-menu">
+<a href="contos_index.html">contos</a>
+<a class="active" href="ensaios_index.html">ensaios</a>
+<a href="novelas_index.html">novelas</a>
+<a href="anotacoes.html">anotações</a>
+<a class="inicio" href="index.html">início</a>
+</nav>
+<div class="index-area" id="content-area">
+<div class="index-header">
+<span class="index-genre-label">ensaios</span>
+</div>
+<div class="index-divider"></div>
+<div class="index-columns">
+<ul class="index-col">
+<li><a href="ensaio-teste-rolagem.html">Ensaio 1</a></li>
+<li><a href="ensaio-ensaio-2.html">Ensaio 2</a></li>
+<li><a href="ensaio-ensaio-3.html">Ensaio 3</a></li>
+<li><a href="ensaio-ensaio-4.html">Ensaio 4</a></li>
+<li><a href="ensaio-ensaio-5.html">Ensaio 5</a></li>
+<li><a href="ensaio-ensaio-6.html">Ensaio 6</a></li>
+<li><a href="ensaio-ensaio-7.html">Ensaio 7</a></li>
+<li><a href="ensaio-ensaio-8.html">Ensaio 8</a></li>
+<li><a href="ensaio-ensaio-9.html">Ensaio 9</a></li>
+<li><a href="ensaio-ensaio-10.html">Ensaio 10</a></li>
+<li><a href="ensaio-ensaio-11.html">Ensaio 11</a></li>
+<li><a href="ensaio-ensaio-12.html">Ensaio 12</a></li>
+<li><a href="ensaio-ensaio-13.html">Ensaio 13</a></li>
+<li><a href="ensaio-ensaio-14.html">Ensaio 14</a></li>
+<li><a href="ensaio-ensaio-15.html">Ensaio 15</a></li>
+<li><a href="ensaio-ensaio-16.html">Ensaio 16</a></li>
+<li><a href="ensaio-ensaio-17.html">Ensaio 17</a></li>
+<li><a href="ensaio-ensaio-18.html">Ensaio 18</a></li>
+<li><a href="ensaio-ensaio-19.html">Ensaio 19</a></li>
+<li><a href="ensaio-ensaio-20.html">Ensaio 20</a></li>
+<li><a href="ensaio-ensaio-21.html">Ensaio 21</a></li>
+<li><a href="ensaio-ensaio-22.html">Ensaio 22</a></li>
+<li><a href="ensaio-ensaio-23.html">Ensaio 23</a></li>
+<li><a href="ensaio-ensaio-24.html">Ensaio 24</a></li>
+<li><a href="ensaio-ensaio-25.html">Ensaio 25</a></li>
+<li><a href="ensaio-ensaio-26.html">Ensaio 26</a></li>
+<li><a href="ensaio-ensaio-27.html">Ensaio 27</a></li>
+<li><a href="ensaio-ensaio-28.html">Ensaio 28</a></li>
+<li><a href="ensaio-ensaio-29.html">Ensaio 29</a></li>
+<li><a href="ensaio-ensaio-30.html">Ensaio 30</a></li>
+</ul>
+</div>
+</div>
+<div class="hero-wrap"><div class="hero-text" id="hero">ensaios</div></div>
+<script>
+function fitTitulo() {
+  const el = document.getElementById("titulo");
+  el.style.fontSize = "100px";
+  const header = document.querySelector("header");
+  const headerStyle = window.getComputedStyle(header);
+  const marginLeft = parseInt(headerStyle.paddingLeft) || 36;
+  const margin = marginLeft * 2;
+  const scale = (window.innerWidth - margin) / el.scrollWidth;
+  el.style.fontSize = (100 * scale) + "px";
+}
+function fitHero() {
+  const el = document.getElementById("hero");
+  el.style.fontSize = "100px";
+  const scale = (window.innerWidth * 1.12) / el.scrollWidth;
+  el.style.fontSize = (100 * scale) + "px";
+}
+function positionContentArea() {
+  const nav = document.getElementById('nav-menu');
+  const lastLink = nav.querySelector('a:last-child');
+  const lastLinkRect = lastLink.getBoundingClientRect();
+  const contentArea = document.getElementById('content-area');
+  const offset = window.innerWidth <= 600 ? 10 : 50;
+  contentArea.style.top = (lastLinkRect.bottom + offset) + 'px';
+}
+document.fonts.ready.then(() => { fitTitulo(); fitHero(); positionContentArea(); });
+window.addEventListener("resize", () => { fitTitulo(); fitHero(); positionContentArea(); });
+document.querySelectorAll('nav a').forEach(link => {
+  link.addEventListener('click', function(e) {
+    if (this.href) { e.preventDefault(); window.location.href = this.href; }
+  });
+});
+</script>
+</body></html>

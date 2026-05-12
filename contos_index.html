@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>contos — fonteboa</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@900&amp;family=Lora:ital,wght@0,400;0,500;1,400&amp;display=swap" rel="stylesheet"/>
+<link href="style.css" rel="stylesheet"/></head>
+<body>
+<header><div class="titulo" id="titulo">ficção breve de Luiz Fonte Boa, (1962- )</div></header>
+<nav id="nav-menu">
+<a class="active" href="contos_index.html">contos</a>
+<a href="ensaios_index.html">ensaios</a>
+<a href="novelas_index.html">novelas</a>
+<a href="anotacoes.html">anotações</a>
+<a class="inicio" href="index.html">início</a>
+</nav>
+<div class="index-area" id="content-area">
+<div class="index-header">
+<span class="index-genre-label">contos</span>
+</div>
+<div class="index-divider"></div>
+<div class="index-columns">
+<ul class="index-col">
+<li><a href="conto-teste-rolagem.html">O homem sem sombra</a></li>
+<li><a href="conto-a-ultima-carta.html">A última carta</a></li>
+<li><a href="conto-tres-janelas.html">Três janelas</a></li>
+<li><a href="conto-o-peso-do-silencio.html">O peso do silêncio</a></li>
+<li><a href="conto-espelhos-em-novembro.html">Espelhos em novembro</a></li>
+<li><a href="conto-a-viagem-de-volta.html">A viagem de volta</a></li>
+<li><a href="conto-o-relogio-parado.html">O relógio parado</a></li>
+<li><a href="conto-cinzas-de-marco.html">Cinzas de março</a></li>
+<li><a href="conto-a-mulher-da-janela.html">A mulher da janela</a></li>
+<li><a href="conto-o-jardim-fechado.html">O jardim fechado</a></li>
+<li><a href="conto-noite-de-velas.html">Noite de velas</a></li>
+<li><a href="conto-o-filho-prodigo.html">O filho pródigo</a></li>
+<li><a href="conto-agua-parada.html">Água parada</a></li>
+<li><a href="conto-a-voz-do-rio.html">A voz do rio</a></li>
+<li><a href="conto-o-ultimo-trem.html">O último trem</a></li>
+<li><a href="conto-o-mapa-antigo.html">O mapa antigo</a></li>
+<li><a href="conto-a-chave-perdida.html">A chave perdida</a></li>
+<li><a href="conto-dois-irmaos.html">Dois irmãos</a></li>
+<li><a href="conto-o-vestido-azul.html">O vestido azul</a></li>
+<li><a href="conto-a-carta-rasgada.html">A carta rasgada</a></li>
+<li><a href="conto-nevoa-de-agosto.html">Névoa de agosto</a></li>
+<li><a href="conto-o-intruso.html">O intruso</a></li>
+<li><a href="conto-a-heranca.html">A herança</a></li>
+<li><a href="conto-tres-noites.html">Três noites</a></li>
+<li><a href="conto-o-barco-de-papel.html">O barco de papel</a></li>
+<li><a href="conto-a-porta-fechada.html">A porta fechada</a></li>
+<li><a href="conto-inverno-tardio.html">Inverno tardio</a></li>
+<li><a href="conto-o-segredo.html">O segredo</a></li>
+<li><a href="conto-a-outra-margem.html">A outra margem</a></li>
+<li><a href="conto-o-passaro-branco.html">O pássaro branco</a></li>
+</ul>
+</div>
+</div>
+<div class="hero-wrap"><div class="hero-text" id="hero">contos</div></div>
+<script>
+function fitTitulo() {
+  const el = document.getElementById("titulo");
+  el.style.fontSize = "100px";
+  const header = document.querySelector("header");
+  const headerStyle = window.getComputedStyle(header);
+  const marginLeft = parseInt(headerStyle.paddingLeft) || 36;
+  const margin = marginLeft * 2;
+  const scale = (window.innerWidth - margin) / el.scrollWidth;
+  el.style.fontSize = (100 * scale) + "px";
+}
+function fitHero() {
+  const el = document.getElementById("hero");
+  el.style.fontSize = "100px";
+  const scale = (window.innerWidth * 1.12) / el.scrollWidth;
+  el.style.fontSize = (100 * scale) + "px";
+}
+function positionContentArea() {
+  const nav = document.getElementById('nav-menu');
+  const lastLink = nav.querySelector('a:last-child');
+  const lastLinkRect = lastLink.getBoundingClientRect();
+  const contentArea = document.getElementById('content-area');
+  const offset = window.innerWidth <= 600 ? 10 : 50;
+  contentArea.style.top = (lastLinkRect.bottom + offset) + 'px';
+}
+document.fonts.ready.then(() => { fitTitulo(); fitHero(); positionContentArea(); });
+window.addEventListener("resize", () => { fitTitulo(); fitHero(); positionContentArea(); });
+document.querySelectorAll('nav a').forEach(link => {
+  link.addEventListener('click', function(e) {
+    if (this.href) { e.preventDefault(); window.location.href = this.href; }
+  });
+});
+</script>
+</body></html>
