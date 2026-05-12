@@ -25,11 +25,11 @@ const CONFIG = {
   // Pastas onde você salva seus rascunhos .txt
   // Caminho relativo à pasta deste script (publicar.js)
   rascunhos: {
-    contos:  '../rascunhos/contos',
-    ensaios: '../rascunhos/ensaios',
-    novelas: '../rascunhos/novelas',
-    notas:   '../rascunhos/notas',
-  },
+    contos:  'rascunhos/contos',
+    ensaios: 'rascunhos/ensaios',
+    novelas: 'rascunhos/novelas',
+    notas:   'rascunhos/notas',
+},
 
   // Arquivos de índice no site
   indices: {
