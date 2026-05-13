@@ -32,5 +32,5 @@ async function loadComments() {
     container.appendChild(div);
   });
 }
-
-document.addEventListener("DOMContentLoaded", loadComments);
+ 
+document.addEventListener("DOMContentLoaded", loadComments); 

@@ -292,28 +292,32 @@ if (erros.length > 0) {
   erros.forEach(e => console.log(`    ! ${e}`));
 }
 
-// Git commit + push
-const totalAlteracoes = totalNovos + totalRemovidos;
+// Git commit + push — sempre envia qualquer alteração pendente
+console.log(`\n  Verificando alterações para enviar ao GitHub...`);
+try {
+  process.chdir(siteDir);
+  execSync('git add -A', { stdio: 'pipe' });
 
-if (totalAlteracoes > 0) {
-  const partes = [];
-  if (totalNovos > 0)     partes.push(`${totalNovos} novo(s)`);
-  if (totalRemovidos > 0) partes.push(`${totalRemovidos} removido(s)`);
-  const msg = `publica: ${partes.join(', ')}`;
+  // Verifica se há algo para commitar
+  const status = execSync('git status --porcelain').toString().trim();
 
-  console.log(`\n  Enviando alterações para o GitHub...`);
-  try {
-    process.chdir(siteDir);
-    execSync('git add -A', { stdio: 'inherit' });
+  if (status.length > 0) {
+    const partes = [];
+    if (totalNovos > 0)     partes.push(`${totalNovos} novo(s)`);
+    if (totalRemovidos > 0) partes.push(`${totalRemovidos} removido(s)`);
+    const msg = partes.length > 0
+      ? `publica: ${partes.join(', ')}`
+      : `atualiza arquivos do site`;
+
     execSync(`git commit -m "${msg}"`, { stdio: 'inherit' });
-    execSync('git push', { stdio: 'inherit' });;
-    console.log('\n  ✓ Publicado com sucesso no GitHub Pages!');
-    console.log('  O texto estará no ar em cerca de 1 minuto.\n');
-  } catch (e) {
-    console.log('\n  [ERRO no envio ao GitHub]');
-    console.log('  Verifique sua conexão e se o repositório está configurado.');
-    console.log('  Detalhes: ' + e.message);
+    execSync('git push', { stdio: 'inherit' });
+    console.log('\n  ✓ Enviado com sucesso para o GitHub Pages!');
+    console.log('  As alterações estarão no ar em cerca de 1 minuto.\n');
+  } else {
+    console.log('\n  Nenhuma alteração pendente. Site já está atualizado.\n');
   }
-} else if (erros.length === 0) {
-  console.log('\n  Nenhuma alteração encontrada.\n');
+} catch (e) {
+  console.log('\n  [ERRO no envio ao GitHub]');
+  console.log('  Verifique sua conexão e se o repositório está configurado.');
+  console.log('  Detalhes: ' + e.message);
 }
