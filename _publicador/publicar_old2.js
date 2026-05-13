@@ -30,7 +30,7 @@ const CONFIG = {
   rascunhos: {
     contos:  'rascunhos/contos',
     ensaios: 'rascunhos/ensaios',
-    cronicas: 'rascunhos/cronicas',
+    novelas: 'rascunhos/novelas',
     notas:   'rascunhos/notas',
   },
 
@@ -38,7 +38,7 @@ const CONFIG = {
   indices: {
     contos:  'contos_index.html',
     ensaios: 'ensaios_index.html',
-    cronicas: 'cronicas_index.html',
+    novelas: 'novelas_index.html',
     notas:   'anotacoes.html',
   },
 
@@ -46,24 +46,24 @@ const CONFIG = {
   prefixos: {
     contos:  'conto',
     ensaios: 'ensaio',
-    cronicas: 'cronica',
+    novelas: 'novela',
     notas:   'nota',
   },
 
   // Palavra decorativa de fundo (hero) em cada seção
   hero: {
-    contos:   'contos',
-    ensaios:  'ensaios',
-    cronicas: 'crônicas',
-    notas:    'anotações',
+    contos:  'contos',
+    ensaios: 'ensaios',
+    novelas: 'novelas',
+    notas:   'anotações',
   },
 
   // Label do item ativo no menu de cada seção
   menuAtivo: {
-    contos:   'contos',
-    ensaios:  'ensaios',
-    cronicas: 'cronicas',
-    notas:    'notas',
+    contos:  'contos',
+    ensaios: 'ensaios',
+    novelas: 'novelas',
+    notas:   'notas',
   },
 };
 
@@ -133,10 +133,10 @@ function gerarHtml(secao, titulo, corpo) {
 <header><div class="titulo" id="titulo">ficção breve de Luiz Fonte Boa, (1962- )</div></header>
 
 <nav id="nav-menu">
-<a${ativo === 'contos'   ? ' class="active"' : ''} href="contos_index.html">${ativo === 'contos' ? 'índice de contos' : 'contos'}</a>
-<a${ativo === 'ensaios'  ? ' class="active"' : ''} href="ensaios_index.html">${ativo === 'ensaios' ? 'índice de ensaios' : 'ensaios'}</a>
-<a${ativo === 'cronicas' ? ' class="active"' : ''} href="cronicas_index.html">${ativo === 'cronicas' ? 'índice de crônicas' : 'crônicas'}</a>
-<a${ativo === 'notas'    ? ' class="active"' : ''} href="anotacoes.html">${ativo === 'notas' ? 'índice de anotações' : 'anotações'}</a>
+<a${ativo === 'contos'  ? ' class="active"' : ''} href="contos_index.html">${ativo === 'contos' ? 'índice de contos' : 'contos'}</a>
+<a${ativo === 'ensaios' ? ' class="active"' : ''} href="ensaios_index.html">${ativo === 'ensaios' ? 'índice de ensaios' : 'ensaios'}</a>
+<a${ativo === 'novelas' ? ' class="active"' : ''} href="novelas_index.html">${ativo === 'novelas' ? 'índice de nouvelles' : 'novelas'}</a>
+<a${ativo === 'notas'   ? ' class="active"' : ''} href="anotacoes.html">${ativo === 'notas' ? 'índice de anotações' : 'anotações'}</a>
 <a class="inicio" href="index.html">início</a>
 </nav>
 
@@ -292,32 +292,28 @@ if (erros.length > 0) {
   erros.forEach(e => console.log(`    ! ${e}`));
 }
 
-// Git commit + push — sempre envia qualquer alteração pendente
-console.log(`\n  Verificando alterações para enviar ao GitHub...`);
-try {
-  process.chdir(siteDir);
-  execSync('git add -A', { stdio: 'pipe' });
+// Git commit + push
+const totalAlteracoes = totalNovos + totalRemovidos;
 
-  // Verifica se há algo para commitar
-  const status = execSync('git status --porcelain').toString().trim();
+if (totalAlteracoes > 0) {
+  const partes = [];
+  if (totalNovos > 0)     partes.push(`${totalNovos} novo(s)`);
+  if (totalRemovidos > 0) partes.push(`${totalRemovidos} removido(s)`);
+  const msg = `publica: ${partes.join(', ')}`;
 
-  if (status.length > 0) {
-    const partes = [];
-    if (totalNovos > 0)     partes.push(`${totalNovos} novo(s)`);
-    if (totalRemovidos > 0) partes.push(`${totalRemovidos} removido(s)`);
-    const msg = partes.length > 0
-      ? `publica: ${partes.join(', ')}`
-      : `atualiza arquivos do site`;
-
+  console.log(`\n  Enviando alterações para o GitHub...`);
+  try {
+    process.chdir(siteDir);
+    execSync('git add -A', { stdio: 'inherit' });
     execSync(`git commit -m "${msg}"`, { stdio: 'inherit' });
-    execSync('git push', { stdio: 'inherit' });
-    console.log('\n  ✓ Enviado com sucesso para o GitHub Pages!');
-    console.log('  As alterações estarão no ar em cerca de 1 minuto.\n');
-  } else {
-    console.log('\n  Nenhuma alteração pendente. Site já está atualizado.\n');
+    execSync('git push', { stdio: 'inherit' });;
+    console.log('\n  ✓ Publicado com sucesso no GitHub Pages!');
+    console.log('  O texto estará no ar em cerca de 1 minuto.\n');
+  } catch (e) {
+    console.log('\n  [ERRO no envio ao GitHub]');
+    console.log('  Verifique sua conexão e se o repositório está configurado.');
+    console.log('  Detalhes: ' + e.message);
   }
-} catch (e) {
-  console.log('\n  [ERRO no envio ao GitHub]');
-  console.log('  Verifique sua conexão e se o repositório está configurado.');
-  console.log('  Detalhes: ' + e.message);
+} else if (erros.length === 0) {
+  console.log('\n  Nenhuma alteração encontrada.\n');
 }
