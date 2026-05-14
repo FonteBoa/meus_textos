@@ -2,60 +2,23 @@
  * comentarios.js — fonteboa
  *
  * Janela flutuante de comentários por página.
- * Comentários guardados no Supabase — visíveis
- * para todos os leitores em todos os dispositivos.
+ * Comentários guardados localmente (localStorage).
+ * Arrasto pela barra de título, redimensionável,
+ * nunca maximizável.
  */
 
 (function () {
   const LIMITE = 280;
-  const SUPABASE_URL  = 'https://xvxuzlsqoanzwhwdsqhz.supabase.co';
-  const SUPABASE_KEY  = 'sb_publishable_Icby26jwuIhb4iIdZxdU7Q_69wYw8_4';
-  const TABELA        = 'comentarios';
-
-  /* ── Identifica a página atual ─────────────────── */
-  function nomePagina() {
-    return window.location.pathname.split('/').pop() || 'index.html';
-  }
-
-  /* ── API Supabase ──────────────────────────────── */
-  async function buscarComentarios() {
-    const url = `${SUPABASE_URL}/rest/v1/${TABELA}?pagina=eq.${encodeURIComponent(nomePagina())}&order=criado_em.asc`;
-    const res = await fetch(url, {
-      headers: {
-        'apikey': SUPABASE_KEY,
-        'Authorization': `Bearer ${SUPABASE_KEY}`,
-      }
-    });
-    if (!res.ok) return [];
-    return await res.json();
-  }
-
-  async function publicarComentario(nome, texto) {
-    const url = `${SUPABASE_URL}/rest/v1/${TABELA}`;
-    const res = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'apikey': SUPABASE_KEY,
-        'Authorization': `Bearer ${SUPABASE_KEY}`,
-        'Content-Type': 'application/json',
-        'Prefer': 'return=minimal',
-      },
-      body: JSON.stringify({
-        pagina: nomePagina(),
-        nome,
-        texto,
-      })
-    });
-    return res.ok;
-  }
 
   /* ── Cria a estrutura HTML da janela ───────────── */
   function criarJanela() {
+    // Botão disparador
     const btn = document.createElement('button');
     btn.id = 'btn-comentar';
     btn.textContent = 'Quero comentar';
     document.body.appendChild(btn);
 
+    // Janela
     const janela = document.createElement('div');
     janela.id = 'janela-comentarios';
     janela.innerHTML = `
@@ -79,17 +42,38 @@
         <div id="contador-chars">0 / ${LIMITE}</div>
         <button id="btn-publicar">Publicar</button>
       </div>
-      <div id="lista-comentarios"><p class="sem-comentarios">Carregando...</p></div>
+      <div id="lista-comentarios"></div>
     `;
     document.body.appendChild(janela);
   }
 
+  /* ── Chave única por página ────────────────────── */
+  function chaveStorage() {
+    const p = window.location.pathname.split('/').pop() || 'index';
+    return 'comentarios:' + p;
+  }
+
+  /* ── Carrega comentários do localStorage ───────── */
+  function carregarComentarios() {
+    try {
+      return JSON.parse(localStorage.getItem(chaveStorage()) || '[]');
+    } catch (e) {
+      return [];
+    }
+  }
+
+  /* ── Salva comentários no localStorage ─────────── */
+  function salvarComentarios(lista) {
+    localStorage.setItem(chaveStorage(), JSON.stringify(lista));
+  }
+
   /* ── Renderiza a lista de comentários ──────────── */
-  function renderizarLista(lista) {
+  function renderizarLista() {
+    const lista = carregarComentarios();
     const el = document.getElementById('lista-comentarios');
     if (!el) return;
 
-    if (!lista || lista.length === 0) {
+    if (lista.length === 0) {
       el.innerHTML = '<p class="sem-comentarios">Nenhum comentário ainda.</p>';
       return;
     }
@@ -103,7 +87,7 @@
     `).join('');
   }
 
-  /* ── Escapa HTML ───────────────────────────────── */
+  /* ── Escapa HTML para segurança ────────────────── */
   function escapar(str) {
     return String(str)
       .replace(/&/g, '&amp;')
@@ -112,7 +96,7 @@
       .replace(/"/g, '&quot;');
   }
 
-  /* ── Arrastar janela ───────────────────────────── */
+  /* ── Lógica de arrastar a janela ───────────────── */
   function habilitarArrastar(janela, alca) {
     let ox = 0, oy = 0, mx = 0, my = 0;
 
@@ -129,8 +113,14 @@
       oy = my - e.clientY;
       mx = e.clientX;
       my = e.clientY;
-      let novoTop  = Math.max(0, Math.min(janela.offsetTop  - oy, window.innerHeight - 60));
-      let novoLeft = Math.max(0, Math.min(janela.offsetLeft - ox, window.innerWidth  - 60));
+
+      let novoTop  = janela.offsetTop  - oy;
+      let novoLeft = janela.offsetLeft - ox;
+
+      // Limita dentro da viewport
+      novoTop  = Math.max(0, Math.min(novoTop,  window.innerHeight - 60));
+      novoLeft = Math.max(0, Math.min(novoLeft, window.innerWidth  - 60));
+
       janela.style.top    = novoTop  + 'px';
       janela.style.left   = novoLeft + 'px';
       janela.style.bottom = 'auto';
@@ -142,6 +132,7 @@
       document.removeEventListener('mouseup',   soltar);
     }
 
+    // Touch (mobile)
     alca.addEventListener('touchstart', (e) => {
       mx = e.touches[0].clientX;
       my = e.touches[0].clientY;
@@ -152,8 +143,12 @@
       oy = my - e.touches[0].clientY;
       mx = e.touches[0].clientX;
       my = e.touches[0].clientY;
-      let novoTop  = Math.max(0, Math.min(janela.offsetTop  - oy, window.innerHeight - 60));
-      let novoLeft = Math.max(0, Math.min(janela.offsetLeft - ox, window.innerWidth  - 60));
+
+      let novoTop  = janela.offsetTop  - oy;
+      let novoLeft = janela.offsetLeft - ox;
+      novoTop  = Math.max(0, Math.min(novoTop,  window.innerHeight - 60));
+      novoLeft = Math.max(0, Math.min(novoLeft, window.innerWidth  - 60));
+
       janela.style.top    = novoTop  + 'px';
       janela.style.left   = novoLeft + 'px';
       janela.style.bottom = 'auto';
@@ -166,27 +161,23 @@
   document.addEventListener('DOMContentLoaded', () => {
     criarJanela();
 
-    const janela      = document.getElementById('janela-comentarios');
-    const btnAbrir    = document.getElementById('btn-comentar');
-    const btnFechar   = document.getElementById('janela-fechar');
+    const janela   = document.getElementById('janela-comentarios');
+    const btnAbrir = document.getElementById('btn-comentar');
+    const btnFechar= document.getElementById('janela-fechar');
     const btnPublicar = document.getElementById('btn-publicar');
-    const campoNome   = document.getElementById('campo-nome');
-    const campoCom    = document.getElementById('campo-comentario');
-    const contador    = document.getElementById('contador-chars');
-    const alca        = document.getElementById('janela-titulo');
+    const campoNome = document.getElementById('campo-nome');
+    const campoCom  = document.getElementById('campo-comentario');
+    const contador  = document.getElementById('contador-chars');
+    const alca      = document.getElementById('janela-titulo');
 
     habilitarArrastar(janela, alca);
+    renderizarLista();
 
-    // Abre janela e carrega comentários
-    btnAbrir.addEventListener('click', async () => {
+    // Abre/fecha
+    btnAbrir.addEventListener('click', () => {
       janela.classList.toggle('visivel');
-      if (janela.classList.contains('visivel')) {
-        const lista = await buscarComentarios();
-        renderizarLista(lista);
-      }
     });
 
-    // Fecha janela
     btnFechar.addEventListener('click', () => {
       janela.classList.remove('visivel');
     });
@@ -209,7 +200,7 @@
     });
 
     // Publicar
-    btnPublicar.addEventListener('click', async () => {
+    btnPublicar.addEventListener('click', () => {
       const nome  = campoNome.value.trim();
       const texto = campoCom.value.trim();
       let erro = false;
@@ -228,23 +219,14 @@
       }
       if (erro) return;
 
-      btnPublicar.textContent = 'Enviando...';
-      btnPublicar.disabled = true;
+      const lista = carregarComentarios();
+      lista.push({ nome, texto });
+      salvarComentarios(lista);
 
-      const ok = await publicarComentario(nome, texto);
-
-      if (ok) {
-        campoNome.value = '';
-        campoCom.value  = '';
-        contador.textContent = '0 / ' + LIMITE;
-        const lista = await buscarComentarios();
-        renderizarLista(lista);
-      } else {
-        alert('Erro ao publicar comentário. Tente novamente.');
-      }
-
-      btnPublicar.textContent = 'Publicar';
-      btnPublicar.disabled = false;
+      campoNome.value = '';
+      campoCom.value  = '';
+      contador.textContent = '0 / ' + LIMITE;
+      renderizarLista();
     });
   });
 })();
