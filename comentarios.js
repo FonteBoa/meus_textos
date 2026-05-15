@@ -1,55 +1,82 @@
 /**
- * comentarios.js — fonteboa
- *
- * Janela flutuante de comentários por página.
- * Comentários guardados no Supabase — visíveis
- * para todos os leitores em todos os dispositivos.
+ * comentarios.js — fonteboa (corrigido)
  */
 
 (function () {
   const LIMITE = 280;
-  const SUPABASE_URL  = 'https://xvxuzlsqoanzwhwdsqhz.supabase.co';
-  const SUPABASE_KEY  = 'sb_publishable_Icby26jwuIhb4iIdZxdU7Q_69wYw8_4';
-  const TABELA        = 'comentarios';
 
-  /* ── Identifica a página atual ─────────────────── */
+  const SUPABASE_URL = 'https://oolesbcxfiuneecgbxoo.supabase.co';
+
+  // ⚠️ USE A ANON PUBLIC KEY (JWT LEGACY), NÃO publishable key
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9vbGVzYmN4Zml1bmVlY2dieG9vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg3NzYyMDIsImV4cCI6MjA5NDM1MjIwMn0.TcldtUy4oo2bkn3szrVQw7SqTa-HN6bTeyJpmK7T4Gs';
+
+  const TABELA = 'comentarios';
+
   function nomePagina() {
     return window.location.pathname.split('/').pop() || 'index.html';
   }
 
-  /* ── API Supabase ──────────────────────────────── */
+  /* ──────────────── SUPABASE ──────────────── */
+
   async function buscarComentarios() {
-    const url = `${SUPABASE_URL}/rest/v1/${TABELA}?pagina=eq.${encodeURIComponent(nomePagina())}&order=criado_em.asc`;
-    const res = await fetch(url, {
-      headers: {
-        'apikey': SUPABASE_KEY,
-        'Authorization': `Bearer ${SUPABASE_KEY}`,
+    try {
+      const url =
+        `${SUPABASE_URL}/rest/v1/${TABELA}` +
+        `?pagina=eq.${encodeURIComponent(nomePagina())}` +
+        `&order=criado_em.asc`;
+
+      const res = await fetch(url, {
+        headers: {
+          apikey: SUPABASE_KEY,
+          Authorization: `Bearer ${SUPABASE_KEY}`,
+        }
+      });
+
+      if (!res.ok) {
+        console.error('Erro ao buscar comentários:', await res.text());
+        return [];
       }
-    });
-    if (!res.ok) return [];
-    return await res.json();
+
+      return await res.json();
+    } catch (err) {
+      console.error('Falha de rede (buscar):', err);
+      return [];
+    }
   }
 
   async function publicarComentario(nome, texto) {
-    const url = `${SUPABASE_URL}/rest/v1/${TABELA}`;
-    const res = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'apikey': SUPABASE_KEY,
-        'Authorization': `Bearer ${SUPABASE_KEY}`,
-        'Content-Type': 'application/json',
-        'Prefer': 'return=minimal',
-      },
-      body: JSON.stringify({
-        pagina: nomePagina(),
-        nome,
-        texto,
-      })
-    });
-    return res.ok;
+    try {
+      const url = `${SUPABASE_URL}/rest/v1/${TABELA}`;
+
+      const res = await fetch(url, {
+        method: 'POST',
+        headers: {
+          apikey: SUPABASE_KEY,
+          Authorization: `Bearer ${SUPABASE_KEY}`,
+          'Content-Type': 'application/json',
+          Prefer: 'return=representation',
+        },
+        body: JSON.stringify({
+          pagina: nomePagina(),
+          nome,
+          texto,
+        })
+      });
+
+      if (!res.ok) {
+        console.error('Erro ao publicar:', await res.text());
+        return false;
+      }
+
+      return true;
+    } catch (err) {
+      console.error('Falha de rede (insert):', err);
+      return false;
+    }
   }
 
-  /* ── Cria a estrutura HTML da janela ───────────── */
+  /* ──────────────── UI ──────────────── */
+
   function criarJanela() {
     const btn = document.createElement('button');
     btn.id = 'btn-comentar';
@@ -58,33 +85,28 @@
 
     const janela = document.createElement('div');
     janela.id = 'janela-comentarios';
+
     janela.innerHTML = `
       <div id="janela-titulo">
         Comentários dos leitores
-        <button id="janela-fechar" title="Fechar">✕</button>
+        <button id="janela-fechar">✕</button>
       </div>
+
       <div id="janela-corpo">
-        <input
-          id="campo-nome"
-          type="text"
-          placeholder="Nome"
-          maxlength="80"
-          autocomplete="off"
-        />
-        <textarea
-          id="campo-comentario"
-          placeholder="Comentário"
-          maxlength="${LIMITE}"
-        ></textarea>
+        <input id="campo-nome" type="text" placeholder="Nome" maxlength="80"/>
+        <textarea id="campo-comentario" placeholder="Comentário" maxlength="${LIMITE}"></textarea>
         <div id="contador-chars">0 / ${LIMITE}</div>
         <button id="btn-publicar">Publicar</button>
       </div>
-      <div id="lista-comentarios"><p class="sem-comentarios">Carregando...</p></div>
+
+      <div id="lista-comentarios">
+        <p class="sem-comentarios">Carregando...</p>
+      </div>
     `;
+
     document.body.appendChild(janela);
   }
 
-  /* ── Renderiza a lista de comentários ──────────── */
   function renderizarLista(lista) {
     const el = document.getElementById('lista-comentarios');
     if (!el) return;
@@ -103,7 +125,6 @@
     `).join('');
   }
 
-  /* ── Escapa HTML ───────────────────────────────── */
   function escapar(str) {
     return String(str)
       .replace(/&/g, '&amp;')
@@ -112,72 +133,21 @@
       .replace(/"/g, '&quot;');
   }
 
-  /* ── Arrastar janela ───────────────────────────── */
-  function habilitarArrastar(janela, alca) {
-    let ox = 0, oy = 0, mx = 0, my = 0;
+  /* ──────────────── INIT ──────────────── */
 
-    alca.addEventListener('mousedown', (e) => {
-      e.preventDefault();
-      mx = e.clientX;
-      my = e.clientY;
-      document.addEventListener('mousemove', mover);
-      document.addEventListener('mouseup', soltar);
-    });
-
-    function mover(e) {
-      ox = mx - e.clientX;
-      oy = my - e.clientY;
-      mx = e.clientX;
-      my = e.clientY;
-      let novoTop  = Math.max(0, Math.min(janela.offsetTop  - oy, window.innerHeight - 60));
-      let novoLeft = Math.max(0, Math.min(janela.offsetLeft - ox, window.innerWidth  - 60));
-      janela.style.top    = novoTop  + 'px';
-      janela.style.left   = novoLeft + 'px';
-      janela.style.bottom = 'auto';
-      janela.style.right  = 'auto';
-    }
-
-    function soltar() {
-      document.removeEventListener('mousemove', mover);
-      document.removeEventListener('mouseup',   soltar);
-    }
-
-    alca.addEventListener('touchstart', (e) => {
-      mx = e.touches[0].clientX;
-      my = e.touches[0].clientY;
-    }, { passive: true });
-
-    alca.addEventListener('touchmove', (e) => {
-      ox = mx - e.touches[0].clientX;
-      oy = my - e.touches[0].clientY;
-      mx = e.touches[0].clientX;
-      my = e.touches[0].clientY;
-      let novoTop  = Math.max(0, Math.min(janela.offsetTop  - oy, window.innerHeight - 60));
-      let novoLeft = Math.max(0, Math.min(janela.offsetLeft - ox, window.innerWidth  - 60));
-      janela.style.top    = novoTop  + 'px';
-      janela.style.left   = novoLeft + 'px';
-      janela.style.bottom = 'auto';
-      janela.style.right  = 'auto';
-      e.preventDefault();
-    }, { passive: false });
-  }
-
-  /* ── Inicialização ─────────────────────────────── */
   document.addEventListener('DOMContentLoaded', () => {
     criarJanela();
 
-    const janela      = document.getElementById('janela-comentarios');
-    const btnAbrir    = document.getElementById('btn-comentar');
-    const btnFechar   = document.getElementById('janela-fechar');
+    const janela = document.getElementById('janela-comentarios');
+    const btnAbrir = document.getElementById('btn-comentar');
+    const btnFechar = document.getElementById('janela-fechar');
     const btnPublicar = document.getElementById('btn-publicar');
-    const campoNome   = document.getElementById('campo-nome');
-    const campoCom    = document.getElementById('campo-comentario');
-    const contador    = document.getElementById('contador-chars');
-    const alca        = document.getElementById('janela-titulo');
 
-    habilitarArrastar(janela, alca);
+    const campoNome = document.getElementById('campo-nome');
+    const campoCom = document.getElementById('campo-comentario');
+    const contador = document.getElementById('contador-chars');
 
-    // Abre janela e carrega comentários
+    /* abrir */
     btnAbrir.addEventListener('click', async () => {
       janela.classList.toggle('visivel');
       if (janela.classList.contains('visivel')) {
@@ -186,47 +156,23 @@
       }
     });
 
-    // Fecha janela
+    /* fechar */
     btnFechar.addEventListener('click', () => {
       janela.classList.remove('visivel');
     });
 
-    // Contador de caracteres
+    /* contador */
     campoCom.addEventListener('input', () => {
       const n = campoCom.value.length;
-      contador.textContent = n + ' / ' + LIMITE;
-      contador.classList.toggle('quase', n >= LIMITE - 30);
+      contador.textContent = `${n} / ${LIMITE}`;
     });
 
-    // Limpa erro ao digitar
-    campoNome.addEventListener('input', () => {
-      campoNome.classList.remove('erro');
-      campoNome.placeholder = 'Nome';
-    });
-    campoCom.addEventListener('input', () => {
-      campoCom.classList.remove('erro');
-      campoCom.placeholder = 'Comentário';
-    });
-
-    // Publicar
+    /* publicar */
     btnPublicar.addEventListener('click', async () => {
-      const nome  = campoNome.value.trim();
+      const nome = campoNome.value.trim();
       const texto = campoCom.value.trim();
-      let erro = false;
 
-      if (!nome) {
-        campoNome.classList.add('erro');
-        campoNome.value = '';
-        campoNome.placeholder = 'Adicite aqui com seu nome';
-        erro = true;
-      }
-      if (!texto) {
-        campoCom.classList.add('erro');
-        campoCom.value = '';
-        campoCom.placeholder = 'Digite aqui seu comentário';
-        erro = true;
-      }
-      if (erro) return;
+      if (!nome || !texto) return;
 
       btnPublicar.textContent = 'Enviando...';
       btnPublicar.disabled = true;
@@ -235,12 +181,12 @@
 
       if (ok) {
         campoNome.value = '';
-        campoCom.value  = '';
-        contador.textContent = '0 / ' + LIMITE;
+        campoCom.value = '';
+
         const lista = await buscarComentarios();
         renderizarLista(lista);
       } else {
-        alert('Erro ao publicar comentário. Tente novamente.');
+        alert('Erro ao enviar comentário. Veja o console (F12).');
       }
 
       btnPublicar.textContent = 'Publicar';

@@ -30,15 +30,16 @@
   min-height: 200px;
   max-width: 90vw;
   max-height: 80vh;
-  background: rgba(200, 223, 240, 0.92);
+  background: rgba(160, 200, 230, 0.83);
   z-index: 300;
   display: none;
   flex-direction: column;
   box-shadow: 0 8px 32px rgba(0,0,0,0.22);
   resize: both;
   overflow: hidden;
-  bottom: 80px;
-  right: 32px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 #janela-comentarios.visivel {
