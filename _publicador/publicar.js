@@ -312,9 +312,7 @@ try {
       : `atualiza arquivos do site`;
 
     execSync(`git commit -m "${msg}"`, { stdio: 'inherit' });
-    // Responde "n" automaticamente para perguntas do git gc no Windows
-    execSync('git push 2>&1 | findstr /v "Deletion of directory"', { stdio: 'inherit', shell: true });
-    try { execSync('echo n | git gc --quiet', { stdio: 'pipe', shell: true }); } catch(e) {}
+    execSync("echo n | git push 2>&1", { stdio: "inherit", shell: true });
     console.log('\n  ✓ Enviado com sucesso para o GitHub Pages!');
     console.log('  As alterações estarão no ar em cerca de 1 minuto.\n');
   } else {
