@@ -170,7 +170,7 @@ function atualizarIndice(arquivoIndice, href, titulo) {
   }
 
   const novoItem = `<li><a href="${href}">${titulo}</a></li>`;
-  html = html.replace('</ul>', `${novoItem}\n</ul>`);
+  html = html.replace(/<ul([^>]*)>/, `<ul$1>\n${novoItem}`);
   fs.writeFileSync(arquivoIndice, html, 'utf8');
   return true;
 }
