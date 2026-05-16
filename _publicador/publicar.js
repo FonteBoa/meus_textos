@@ -170,7 +170,7 @@ function atualizarIndice(arquivoIndice, href, titulo) {
   }
 
   const novoItem = `<li><a href="${href}">${titulo}</a></li>`;
-  html = html.replace(/<ul([^>]*)>/, `<ul$1>\n${novoItem}`);
+  html = html.replace('</ul>', `${novoItem}\n</ul>`);
   fs.writeFileSync(arquivoIndice, html, 'utf8');
   return true;
 }
@@ -298,6 +298,8 @@ if (erros.length > 0) {
 console.log(`\n  Verificando alterações para enviar ao GitHub...`);
 try {
   process.chdir(siteDir);
+  execSync('git config --global gc.auto 0', { stdio: 'pipe' });
+  execSync('git config --global gc.autopacklimit 0', { stdio: 'pipe' });
   execSync('git add -A', { stdio: 'pipe' });
 
   // Verifica se há algo para commitar
