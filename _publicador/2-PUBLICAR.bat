@@ -25,28 +25,7 @@ echo ================================================
 echo.
 pause
 echo.
-
-:: 1. Define a raiz do projeto (C:\TEXTOS\site) e gera os HTMLs
-set RAIZ_PROJETO=%~dp0..
-node "%~dp0publicar.js" "%RAIZ_PROJETO%"
-
-:: 2. Entra na pasta correta onde as alterações foram feitas
-cd /d "%RAIZ_PROJETO%"
-
-:: 3. Sincroniza o computador com o site para evitar conflitos de rejeição
-git pull origin main
-
-:: 4. Adiciona os novos contos gerados à fila do Git
-git add .
-
-:: 5. Salva as alterações localmente em um commit automático
-git commit -m "Publicando novos contos de forma automatica"
-
-:: 6. Envia tudo para o servidor do GitHub
-echo.
-echo Enviando para o servidor do GitHub...
-echo.
-git push origin main
-
+set SITE_DIR=%~dp0..
+node "%~dp0publicar.js" "%SITE_DIR%"
 echo.
 pause
