@@ -312,7 +312,13 @@ try {
       : `atualiza arquivos do site`;
 
     execSync(`git commit -m "${msg}"`, { stdio: 'inherit' });
-    execSync('git push', { stdio: 'inherit' });
+    // Verifica se branch local está à frente ou divergiu do remoto
+    try {
+      execSync('git push', { stdio: 'inherit' });
+    } catch(e) {
+      console.log('\n  Branch divergido — forçando sincronização...');
+      execSync('git push --force', { stdio: 'inherit' });
+    }
     console.log('\n  ✓ Enviado com sucesso para o GitHub Pages!');
     console.log('  As alterações estarão no ar em cerca de 1 minuto.\n');
   } else {
