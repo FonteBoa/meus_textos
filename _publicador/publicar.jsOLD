@@ -298,6 +298,8 @@ if (erros.length > 0) {
 console.log(`\n  Verificando alterações para enviar ao GitHub...`);
 try {
   process.chdir(siteDir);
+  execSync('git config --global gc.auto 0', { stdio: 'pipe' });
+  execSync('git config --global gc.autopacklimit 0', { stdio: 'pipe' });
   execSync('git add -A', { stdio: 'pipe' });
 
   // Verifica se há algo para commitar
@@ -312,9 +314,7 @@ try {
       : `atualiza arquivos do site`;
 
     execSync(`git commit -m "${msg}"`, { stdio: 'inherit' });
-    // Responde "n" automaticamente para perguntas do git gc no Windows
-    execSync('git push 2>&1 | findstr /v "Deletion of directory"', { stdio: 'inherit', shell: true });
-    try { execSync('echo n | git gc --quiet', { stdio: 'pipe', shell: true }); } catch(e) {}
+    execSync('git push', { stdio: 'inherit' });
     console.log('\n  ✓ Enviado com sucesso para o GitHub Pages!');
     console.log('  As alterações estarão no ar em cerca de 1 minuto.\n');
   } else {
