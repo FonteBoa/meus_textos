@@ -1,11 +1,8 @@
 @echo off
 title fonteboa publicando...
-
-:: Configurações de otimização do Git
 git config --global gc.auto 0
 git config --global gc.autopacklimit 0
 git config --global gc.pruneExpire never
-
 echo.
 echo ================================================
 echo   AVISO IMPORTANTE
@@ -14,41 +11,42 @@ echo.
 echo   O publicador ira gerar seus HTMLs e enviar
 echo   tudo ao GitHub automaticamente.
 echo.
+echo   Ao final podem aparecer mensagens com
+echo   "Deletion of directory failed".
+echo   Sao INOFENSIVAS - seu texto ja estara
+echo   publicado com sucesso antes delas.
+echo.
+echo   Se isso acontecer, tecle Ctrl+C para sair.
+echo   Em seguida, ENTER novamente.
+echo   Ainda surgira um pedido de confirmacao:
+echo   tecle S para autorizar e encerrar o processo.
+echo.
 echo ================================================
 echo.
 pause
+echo.
 
-:: 1. Define a raiz do projeto (C:\TEXTOS\site)
+:: 1. Define a raiz do projeto (C:\TEXTOS\site) e gera os HTMLs
 set RAIZ_PROJETO=%~dp0..
-
-:: 2. Executa o publicar.js passando a pasta certa para ele trabalhar
 node "%~dp0publicar.js" "%RAIZ_PROJETO%"
 
-echo.
-echo ------------------------------------------------
-echo   Preparando arquivos para o GitHub...
-echo ------------------------------------------------
-echo.
-
-:: 3. Move o terminal para a raiz do repositório onde estão os arquivos modificados
+:: 2. Entra na pasta correta onde as alterações foram feitas
 cd /d "%RAIZ_PROJETO%"
 
-:: 4. Adiciona todas as modificações e novos contos
+:: 3. Sincroniza o computador com o site para evitar conflitos de rejeição
+git pull origin main
+
+:: 4. Adiciona os novos contos gerados à fila do Git
 git add .
 
-:: 5. Faz o commit automático
+:: 5. Salva as alterações localmente em um commit automático
 git commit -m "Publicando novos contos de forma automatica"
 
-:: 6. Envia as atualizações para o GitHub
+:: 6. Envia tudo para o servidor do GitHub
 echo.
 echo Enviando para o servidor do GitHub...
 echo.
 git push origin main
 
-echo.
-echo ================================================
-echo   PROCESSO CONCLUIDO COM SUCESSO!
-echo   Verifique agora a aba Actions no GitHub.
-echo ================================================
 echo.
 pause
