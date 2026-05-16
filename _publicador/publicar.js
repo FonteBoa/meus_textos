@@ -170,7 +170,7 @@ function atualizarIndice(arquivoIndice, href, titulo) {
   }
 
   const novoItem = `<li><a href="${href}">${titulo}</a></li>`;
-  html = html.replace('</ul>', `${novoItem}\n</ul>`);
+  html = html.replace(/<ul([^>]*)>/, `<ul$1>\n${novoItem}`);
   fs.writeFileSync(arquivoIndice, html, 'utf8');
   return true;
 }
@@ -312,7 +312,7 @@ try {
       : `atualiza arquivos do site`;
 
     execSync(`git commit -m "${msg}"`, { stdio: 'inherit' });
-    execSync("echo n | git push 2>&1", { stdio: "inherit", shell: true });
+    execSync('git push', { stdio: 'inherit' });
     console.log('\n  ✓ Enviado com sucesso para o GitHub Pages!');
     console.log('  As alterações estarão no ar em cerca de 1 minuto.\n');
   } else {
