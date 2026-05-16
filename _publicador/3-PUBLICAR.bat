@@ -17,6 +17,9 @@ echo   Sao INOFENSIVAS - seu texto ja estara
 echo   publicado com sucesso antes delas.
 echo.
 echo   Se isso acontecer, tecle Ctrl+C para sair.
+echo   Em seguida, ENTER novamente.
+echo   Ainda surgira um pedido de confirmacao:
+echo   tecle S para autorizar e encerrar o processo.
 echo.
 echo ================================================
 echo.
