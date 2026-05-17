@@ -19,7 +19,7 @@ const ignorar = [
   'notas_index.html',
   'nouvelles_index.html',
   'novelas_index.html',
-
+  'anotacoes.html',
   'comentarios.html',
   'conto-template.html',
   'ensaio-template.html',

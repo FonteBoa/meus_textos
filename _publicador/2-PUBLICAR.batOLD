@@ -11,15 +11,21 @@ echo.
 echo   O publicador ira gerar seus HTMLs e enviar
 echo   tudo ao GitHub automaticamente.
 echo.
-echo   Aguarde ate ver a mensagem:
-echo   "Enviado com sucesso para o GitHub Pages!"
-echo   antes de fechar esta janela.
+echo   Ao final podem aparecer mensagens com
+echo   "Deletion of directory failed".
+echo   Sao INOFENSIVAS - seu texto ja estara
+echo   publicado com sucesso antes delas.
+echo.
+echo   Se isso acontecer, tecle Ctrl+C para sair.
+echo   Em seguida, ENTER novamente.
+echo   Ainda surgira um pedido de confirmacao:
+echo   tecle S para autorizar e encerrar o processo.
 echo.
 echo ================================================
 echo.
 pause
 echo.
 set SITE_DIR=%~dp0..
-echo n | node "%~dp0publicar.js" "%SITE_DIR%"
+node "%~dp0publicar.js" "%SITE_DIR%"
 echo.
 pause
