@@ -26,35 +26,47 @@ cd /d "%RAIZ_PROJETO%"
 
 echo.
 echo ------------------------------------------------
-echo   PASSO 1: Sincronizando com o GitHub...
+echo   PASSO 1: Preparando arquivos locais...
 echo ------------------------------------------------
 echo.
 
-:: 3. PUXA as novidades do site primeiro (evita o erro 'rejected')
+:: 3. Organiza os arquivos que já estão modificados na máquina para o Git não reclamar
+git add .
+
+echo.
+echo ------------------------------------------------
+echo   PASSO 2: Sincronizando com o GitHub...
+echo ------------------------------------------------
+echo.
+
+:: 4. Agora sim, puxa atualizações do site de forma totalmente segura
 git pull origin main --rebase
 
 echo.
 echo ------------------------------------------------
-echo   PASSO 2: Gerando novos HTMLs...
+echo   PASSO 3: Gerando novos HTMLs...
 echo ------------------------------------------------
 echo.
 
-:: 4. Executa o seu script do Node para criar os novos textos
+:: 5. Executa o seu script do Node para criar os novos textos
 node "%~dp0publicar.js" "%RAIZ_PROJETO%"
 
 echo.
 echo ------------------------------------------------
-echo   PASSO 3: Enviando atualizacoes...
+echo   PASSO 4: Enviando atualizacoes...
 echo ------------------------------------------------
 echo.
 
-:: 5. Adiciona os novos contos e crônicas gerados
+:: 6. Inclui os novos contos e índices gerados pelo Node
 git add .
 
-:: 6. Faz o commit com o pacote de novidades
+:: 7. Faz o commit com todas as novidades juntas
 git commit -m "publica: novos textos de forma automatica"
 
-:: 7. Envia os arquivos de forma limpa e segura
+:: 8. Envia os arquivos de forma limpa e direta
+echo.
+echo Enviando atualizacoes para o servidor...
+echo.
 git push origin main
 
 echo.
